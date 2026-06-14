@@ -1,0 +1,29 @@
+# Example default config schema for LLM Resource Selector
+providers:
+  groq:
+    aliases:
+      - name: ExampleGroq
+        api_key: <your_groq_api_key>
+        models:
+          - id: allam-2-7b
+            rpm: 30
+            rpd: 7000
+            tpm: 6000
+            tpd: 500000
+            cost_per_1k: 0
+  openrouter:
+    aliases:
+      - name: ExampleOR
+        api_key: <your_openrouter_key>
+        models: []
+  openai:
+    aliases:
+      - name: ExampleOpenAI
+        api_key: <your_openai_key>
+        monthly_limit_usd: 15
+        fallback_only: true
+policy:
+  preference: [groq, openrouter, openai]
+  notify_at_percent: 10
+  auto_fallback: true
+  logging_mode: true

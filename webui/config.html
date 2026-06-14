@@ -1,0 +1,70 @@
+<html>
+<head>
+  <title>LLM Resource Selector Settings</title>
+  <script type="module" src="/plugins/llm_resource_selector/webui/llm-resource-selector-store.js"></script>
+</head>
+<body>
+  <div x-data>
+    <template x-if="$store.llmResourceSelectorStore">
+      <div x-init="$store.llmResourceSelectorStore.onOpen()" x-destroy="$store.llmResourceSelectorStore.cleanup()">
+        <h2>LLM Providers &amp; Quotas</h2>
+        <div>
+          <button @click="$store.llmResourceSelectorStore.refreshRates()">Refresh Rates</button>
+        </div>
+        <template x-for="(provider, pidx) in config.providers">
+          <fieldset :key="pidx" style="margin:1em 0;padding:1em;border:1px solid #ccc;">
+            <legend x-text="provider[0].toUpperCase() + provider.slice(1)"></legend>
+            <template x-for="(alias, aidx) in provider.aliases">
+              <div :key="aidx" style="margin-bottom:1em;">
+                <input x-model="alias.name" placeholder="Alias (e.g. 'MainGroq')" />
+                <!-- API keys are never stored here. Below field is for credential alias only. -->
+<input x-model="alias.credential_alias" placeholder="Credential Alias (stored in AgentZero settings)" />
+                <template x-for="(model, midx) in alias.models">
+                  <div :key="midx" style="margin-left:2em;">
+                    <input x-model="model.id" placeholder="Model (e.g. 'llama-3.1-8b-instant')" />
+                    <input x-model.number="model.rpm" placeholder="RPM" style="width:5em" />
+                    <input x-model.number="model.tpm" placeholder="TPM" style="width:5em" />
+                    <input x-model.number="model.rpd" placeholder="RPD" style="width:5em" />
+                    <input x-model.number="model.tpd" placeholder="TPD" style="width:5em" />
+                    <input x-model.number="model.cost_per_1k" placeholder="Cost/1k" style="width:6em" />
+                  </div>
+                </template>
+                <button @click="$store.llmResourceSelectorStore.addModel(pidx,aidx)">Add Model</button>
+              </div>
+            </template>
+            <button @click="$store.llmResourceSelectorStore.addAlias(pidx)">Add Alias</button>
+          </fieldset>
+        </template>
+        <h3>Policy</h3>
+        <div>
+          <label>Preference Order (comma separated): </label>
+          <input x-model="config.policy.preference" placeholder="groq,openrouter,openai" style="width:16em;" />
+        </div>
+        <div>
+          <label>Notify at % quota left:</label>
+          <input x-model.number="config.policy.notify_at_percent" style="width:4em;" />
+        </div>
+        <div>
+          <label><input type="checkbox" x-model="config.policy.auto_fallback" /> Auto Fallback</label>
+        </div>
+        <div>
+          <label><input type="checkbox" x-model="config.policy.logging_mode" /> Logging Mode</label>
+        </div>
+        <h3>Current Status</h3>
+        <div>
+            <template x-for="(status, key) in $store.llmResourceSelectorStore.status">
+                <div :key="key">
+                    <strong x-text="key"></strong>: <span x-text="status"></span>
+                </div>
+            </template>
+        </div>
+        <h3>Selected LLM (auto)</h3>
+        <div>
+          <span x-text="$store.llmResourceSelectorStore.currentSelection"></span>
+          <button @click="$store.llmResourceSelectorStore.overrideSelection()">Override</button>
+        </div>
+      </div>
+    </template>
+  </div>
+</body>
+</html>

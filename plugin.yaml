@@ -1,0 +1,7 @@
+name: llm_resource_selector
+version: 1.0.0
+title: LLM Resource Selector
+description: Dynamically selects and routes LLM completions to the lowest-cost, practical backend (Groq, OpenRouter, OpenAI, etc.) according to user-configured quotas and preferences. Supports multiple providers, aliases, models, quotas, and priorities. Community-ready, provider-agnostic, and extensible.
+settings_sections: [agent]
+per_project_config: false
+per_agent_config: false
