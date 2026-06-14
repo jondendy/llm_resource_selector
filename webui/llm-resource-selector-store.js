@@ -30,15 +30,20 @@ export const store = createStore('llmResourceSelectorStore', {
         this.currentSelection = 'groq/AiderGithubVercel (llama-3.1-8b-instant)';
     },
     addAlias(providerIdx) {
-        // Adds empty alias structure to provider
-        const p = Object.values(this.config.providers)[providerIdx];
-        p.aliases.push({ name: '', api_key: '', models: [] });
+        const pNames = Object.keys(this.config.providers);
+        const p = this.config.providers[pNames[providerIdx]];
+        if (!p.aliases) p.aliases = [];
+        p.aliases.push({ name: '', credential_alias: '', models: [] });
+        // Force reactivity
+        this.config.providers = { ...this.config.providers };
     },
     addModel(providerIdx, aliasIdx) {
-        // Adds empty model structure to alias
-        const p = Object.values(this.config.providers)[providerIdx];
-        p.aliases[aliasIdx].models = p.aliases[aliasIdx].models || [];
+        const pNames = Object.keys(this.config.providers);
+        const p = this.config.providers[pNames[providerIdx]];
+        if (!p.aliases[aliasIdx].models) p.aliases[aliasIdx].models = [];
         p.aliases[aliasIdx].models.push({ id: '', rpm: 0, rpd: 0, tpm: 0, tpd: 0, cost_per_1k: 0 });
+        // Force reactivity
+        this.config.providers = { ...this.config.providers };
     },
     overrideSelection() {
         // User-triggered selection override (makes override live)
